@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/mozilla/vaani.client/issues"
   },
-  "homepage": "https://github.com/mozilla/vaani.client#readme"
+  "homepage": "https://github.com/mozilla/vaani.client#readme",
+  "dependencies": {
+    "websocket": "^1.0.23"
+  }
 }
