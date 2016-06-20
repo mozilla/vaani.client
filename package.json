@@ -1,0 +1,19 @@
+{
+  "name": "vaani.client",
+  "version": "0.0.1",
+  "description": "Client for Project Vaani",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla/vaani.client.git"
+  },
+  "author": "Kelly Davis <kdavis@mozilla.com>",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozilla/vaani.client/issues"
+  },
+  "homepage": "https://github.com/mozilla/vaani.client#readme"
+}
