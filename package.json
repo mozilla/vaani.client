@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/mozilla/vaani.client#readme",
   "dependencies": {
-    "wakeword": "git@gitlab.com:Cwiiis/wakeword.git",
+    "wakeword": "https://gitlab.com/Cwiiis/wakeword.git",
     "ws": "^1.1.0"
   }
 }
