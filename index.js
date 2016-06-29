@@ -19,6 +19,7 @@ function vad(data) {
   }
 
   // TODO: return false if no activity detected.
+  console.log('data.... Vad:' +  Wakeword.decoder.processWebrtcVad(data));
 
   return true;
 }
@@ -26,7 +27,7 @@ function vad(data) {
 function listen() {
   var stream = null;
   var wakeTime = 0;
-  Wakeword.listen(['foxy'], 0.87, (data, word) => {
+  Wakeword.listen(['foxy'], 0.80, (data, word) => {
     if (!stream) {
       wakeTime = Date.now();
       stream = new MemoryStream();
