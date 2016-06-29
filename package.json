@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/mozilla/vaani.client.git"
   },
-  "author": "Kelly Davis <kdavis@mozilla.com>",
+  "author": "Chris Lord <clord@mozilla.com> and Andre Natal <anatal@mozilla.com>",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/mozilla/vaani.client/issues"
