@@ -34,8 +34,8 @@ function listen() {
 
     stream.write(data);
 
-    var samples = stream.read(VAD_BYTES);
-    if (samples) {
+    var samples;
+    while ((samples = stream.read(VAD_BYTES))) {
       streamToServer(samples);
       if (Date.now() - wakeTime > MAX_LISTEN_TIME || !vad(samples)) {
         Wakeword.stop();
