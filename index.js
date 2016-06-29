@@ -26,7 +26,7 @@ function vad(data) {
 function listen() {
   var stream = null;
   var wakeTime = 0;
-  Wakeword.listen(['foxy'], 3000, (data, word, wordData) => {
+  Wakeword.listen(['foxy'], 0.87, (data, word) => {
     if (!stream) {
       wakeTime = Date.now();
       stream = new MemoryStream();
