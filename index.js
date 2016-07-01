@@ -7,9 +7,12 @@ const child_process = require('child_process');
 const fs = require('fs');
 const MAX_LISTEN_TIME = 7500;
 const VAD_BYTES = 640;
+const MAX_SIL_TIME = 2500;
 var ws;
 var streamServer = new MemoryStream();
 const call = (command, params) => child_process.spawn(command, params.split(' '));
+var lastvadStatus = 0;
+var dtStartSilence, totalSilencetime;
 
 function connectServer(){
   console.log('connecting to server');
@@ -72,18 +75,29 @@ function endStreamToServer() {
 
 function vad(data) {
   if (!data) {
-    return true;
+    return MAX_SIL_TIME;
   }
 
-  // TODO: return false if no activity detected.
-  //console.log('data.... Vad:' +  Wakeword.decoder.processWebrtcVad(data));
+  var vadStatus = Wakeword.decoder.processWebrtcVad(data);
 
-  return true;
+  if (lastvadStatus == 1 && vadStatus == 0){
+    dtStartSilence = Date.now();
+  } else if (lastvadStatus == 0 && vadStatus == 0 && dtStartSilence){
+    totalSilencetime = Date.now() - dtStartSilence;
+  } else if (lastvadStatus == 0 && vadStatus == 1) {
+    totalSilencetime = 0;
+  }
+
+  console.log('data.... Vad: totalSilencetime' + totalSilencetime );
+  lastvadStatus = vadStatus;
+
+  return totalSilencetime;
 }
 
 function listen() {
   var streamvad = null;
   var wakeTime = 0;
+  var secsSilence = 0;
 
   Wakeword.listen(['foxy'], 0.83, 'hi.wav', (data, word) => {
 
@@ -91,6 +105,7 @@ function listen() {
       connectServer();
       streamvad = new MemoryStream();
       wakeTime = Date.now();
+      dtStartSilence = totalSilencetime = null;
     }
 
     streamvad.write(data);
@@ -98,11 +113,11 @@ function listen() {
     //console.log('foxy');
     let samples;
     while ((samples = streamvad.read(VAD_BYTES))) {
-      vad(samples);
+      secsSilence = vad(samples);
       streamToServer(samples);
     }
 
-    if (Date.now() - wakeTime > MAX_LISTEN_TIME) {
+    if ((Date.now() - wakeTime > MAX_LISTEN_TIME) || (secsSilence >=  MAX_SIL_TIME)) {
       streamvad.end();
       Wakeword.stop();
       endStreamToServer();
