@@ -18,7 +18,7 @@
   "homepage": "https://github.com/mozilla/vaani.client#readme",
   "dependencies": {
     "memorystream": "0.3.1",
-    "wakeword": "https://gitlab.com/andrenatal/wakeword",
+    "wakeword": "https://github.com/andrenatal/wakeword",
     "ws": "^1.1.0"
   }
 }
