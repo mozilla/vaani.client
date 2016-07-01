@@ -85,7 +85,7 @@ function listen() {
   var streamvad = null;
   var wakeTime = 0;
 
-  Wakeword.listen(['foxy'], 0.83, (data, word) => {
+  Wakeword.listen(['foxy'], 0.83, 'hi.wav', (data, word) => {
 
     if (!streamvad) {
       connectServer();
