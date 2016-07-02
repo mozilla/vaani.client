@@ -2,7 +2,14 @@ language: node_js
 
 node_js:
 - "5"
-
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 install:
 - wget http://downloads.sourceforge.net/swig/swig-3.0.10.tar.gz 
 - tar xvfz swig-3.0.10.tar.gz
