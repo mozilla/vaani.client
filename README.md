@@ -18,4 +18,10 @@ Installation
 
 Running
 ----------
-npm run
+- To run with forever `npm run forever`
+- To run with standard node `npm start`
+
+Stopping
+----------
+- `npm run forever-stop`
+ 
