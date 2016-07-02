@@ -4,6 +4,7 @@ node_js:
 - "4"
 
 install:
+- sudo apt-get install swig
 - git clone https://github.com/mozilla/sphinxbase
 - cd sphinxbase
 - ./autogen.sh
