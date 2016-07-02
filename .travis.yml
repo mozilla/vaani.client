@@ -4,4 +4,18 @@ node_js:
 - "4"
 
 install:
+- git clone https://github.com/mozilla/sphinxbase
+- cd sphinxbase
+- ./autogen.sh
+- ./configure
+- make
+- sudo make install
+- cd ..
+- git clone https://github.com/mozilla/pocketsphinx
+- cd pocketsphinx
+- ./autogen.sh
+- ./configure
+- make
+- sudo make install
+- cd ..
 - npm install
