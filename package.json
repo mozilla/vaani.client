@@ -4,7 +4,9 @@
   "description": "Client for Project Vaani",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "forever": "forever start index.js",
+    "forever-stop": "forever stop index.js",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
