@@ -8,7 +8,7 @@ install:
 - tar xvfz swig-3.0.10.tar.gz
 - cd swig-3.0.10
 - ./configure --prefix=/usr --without-clisp --without-maximum-compile-warnings && make
-- sudo make install && install -v -m755
+- sudo make install 
 - cd ..
 - git clone https://github.com/mozilla/sphinxbase
 - cd sphinxbase
