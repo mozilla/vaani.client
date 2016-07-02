@@ -84,7 +84,7 @@ function listen() {
   var wakeTime = 0;
   var secsSilence = 0;
 
-  Wakeword.listen(['foxy'], 0.83, 'hi.wav', (data, word) => {
+  Wakeword.listen(['foxy'], 0.83, 'resources/hi.wav', (data, word) => {
 
     if (!streamvad) {
       connectServer();
@@ -103,6 +103,7 @@ function listen() {
     }
 
     if ((Date.now() - wakeTime > MAX_LISTEN_TIME) || (secsSilence >=  MAX_SIL_TIME)) {
+      var play = call('play', 'resources/end_spot.wav');
       streamvad.end();
       Wakeword.stop();
       endStreamToServer();
