@@ -15,20 +15,17 @@ var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
 
 function connectServer(){
-  console.log('connecting to server');
   ws = new WebSocket('ws://localhost:8080/?token=testtoken', null, { rejectUnauthorized: false });
   var wstream;
   var isWav;
 
   ws.on('open', () => {
-    console.log("socket opened");
     isWav = false;
     wstream = fs.createWriteStream('output.wav');
 });
 
 
   ws.on('message', (data, flags) => {
-    //console.log('message from server rcvd:');
     if (!isWav){
       console.log(data);
       isWav = true;
@@ -38,38 +35,27 @@ function connectServer(){
   });
 
   ws.on('close', () => {
-    console.log('message closed from srv');
     wstream.end();
     var play = call('play', 'output.wav');
     play.stdout.on('close', () => {
-      console.log('fim do play. Restart.....');
       listen();
     });
   });
 }
 
 function streamToServer(data) {
-  //console.log('Sending data to server');
   streamServer.write(data);
   var samples;
   if (ws.readyState == ws.OPEN) {
-    //console.log("entrando no while de ler samples " );
-
     while ((samples = streamServer.read(VAD_BYTES))) {
-      //console.log("sending to server...");
       ws.send(samples);
     }
-  } else {
-    //console.log("not connected yet");
   }
 }
 
 function endStreamToServer() {
-  console.log('Ending stream to server');
   if (ws.readyState == ws.OPEN) {
     ws.send('EOS');
-  } else {
-    //console.log("not connected yet");
   }
 }
 
@@ -88,7 +74,6 @@ function vad(data) {
     totalSilencetime = 0;
   }
 
-  console.log('data.... Vad: totalSilencetime' + totalSilencetime );
   lastvadStatus = vadStatus;
 
   return totalSilencetime;
@@ -121,7 +106,6 @@ function listen() {
       streamvad.end();
       Wakeword.stop();
       endStreamToServer();
-      console.log("Parado ws.")
     }
   });
 }
