@@ -8,7 +8,7 @@ This is the front-end application for the Mozilla's Connected Devices project [V
 Prerequisites
 -----------
 - Linux or OSX based system
-- nodejs >= 4.0
+- nodejs >= 4.2.x
 - [sox] (http://sox.sourceforge.net/)
 - [node-pocketsphinx](http://github.com/cmusphinx/node-pocketsphinx) `[sudo] npm install -g pocketsphinx`
 - Install Mozilla's custom [sphinxbase](https://github.com/mozilla/sphinxbase) and [pocketsphinx](https://github.com/mozilla/pocketsphinx)
