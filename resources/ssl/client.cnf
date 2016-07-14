@@ -1,0 +1,25 @@
+[ req ]
+default_bits           = 4096
+days                   = 9999
+distinguished_name     = req_distinguished_name
+attributes             = req_attributes
+prompt                 = no
+x509_extensions        = v3_ca
+
+[ req_distinguished_name ]
+C                      = DE
+ST                     = BE
+L                      = Berlin
+O                      = Mozilla
+OU                     = Connected Devices
+CN                     = vaaniclient1
+emailAddress           = tilman@mozilla.com
+
+[ req_attributes ]
+
+[ v3_ca ]
+authorityInfoAccess = @issuer_info
+
+[ issuer_info ]
+OCSP;URI.0 = http://ocsp.mozilla.com/
+caIssuers;URI.0 = http://mozilla.com/ca.cert

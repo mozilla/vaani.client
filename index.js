@@ -8,14 +8,34 @@ const fs = require('fs');
 const MAX_LISTEN_TIME = 7500;
 const VAD_BYTES = 640;
 const MAX_SIL_TIME = 2500;
+const url = require('url');
+const ssldir = './resources/ssl/';
+
 var ws;
 var streamServer = new MemoryStream();
 const call = (command, params) => child_process.spawn(command, params.split(' '));
 var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
+const config = JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("config.json"));
 
 function connectServer(){
-  ws = new WebSocket('ws://localhost:8080/?token=testtoken', null, { rejectUnauthorized: false });
+  var server = config.vaaniserver;
+  server = url.parse(server, true, false);
+  server.query.authtoken = config.evernote.authtoken;
+  server.pathname = '/';
+  server = url.format(server);
+
+  var options = {
+    rejectUnauthorized: false
+  };
+  if (config.secure) {
+    options.key =  fs.readFileSync(ssldir + 'client-key.pem');
+    options.cert = fs.readFileSync(ssldir + 'client-crt.pem');
+    options.ca =   fs.readFileSync(ssldir + 'ca-crt.pem');
+    options.passphrase = config.passphrase;
+  }
+
+  ws = new WebSocket(server, null, options);
   var wstream;
   var isWav;
 
@@ -84,7 +104,7 @@ function listen() {
   var wakeTime = 0;
   var secsSilence = 0;
 
-  Wakeword.listen(['foxy'], 0.83, 'resources/hi.wav', (data, word) => {
+  Wakeword.listen([config.wakeword], 0.83, (data, word) => {
 
     if (!streamvad) {
       connectServer();
