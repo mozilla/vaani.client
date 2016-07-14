@@ -1,5 +1,5 @@
 #!bin/bash
-sudo apt-get install vim iceweasel sox node npm python-dev autoconf automake libtool bison pkg-config libpcre3 libpcre3-dev
+sudo apt-get install git sox node npm python-dev autoconf automake libtool bison pkg-config libpcre3 libpcre3-dev
 wget http://node-arm.herokuapp.com/node_latest_armhf.deb &
 wait
 echo 'downloaded'
