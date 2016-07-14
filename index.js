@@ -14,6 +14,8 @@ const ssldir = './resources/ssl/';
 var ws;
 var streamServer = new MemoryStream();
 const call = (command, params) => child_process.spawn(command, params.split(' '));
+const callSync = (command, params) => child_process.spawnSync(command, params.split(' '));
+
 var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
 const config = JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("config.json"));
@@ -49,6 +51,8 @@ function connectServer(){
     if (!isWav){
       console.log(data);
       isWav = true;
+      Wakeword.resume();
+      Wakeword.pause();
     } else {
       wstream.write(data);
     }
@@ -58,7 +62,7 @@ function connectServer(){
     wstream.end();
     var play = call('play', 'output.wav');
     play.stdout.on('close', () => {
-      listen();
+      Wakeword.resume();
     });
   });
 }
@@ -106,28 +110,36 @@ function listen() {
 
   Wakeword.listen([config.wakeword], 0.83, (data, word) => {
 
-    if (!streamvad) {
-      connectServer();
-      streamvad = new MemoryStream();
-      wakeTime = Date.now();
-      dtStartSilence = totalSilencetime = null;
-    }
+        let samples;
 
-    streamvad.write(data);
+        if (!streamvad) {
+          Wakeword.mic.pause();
+          callSync('play', 'resources/hi.wav');
+          Wakeword.mic.resume();
+          connectServer();
+          streamvad = new MemoryStream();
+          wakeTime = Date.now();
+          dtStartSilence = totalSilencetime = null;
+        }
 
-    //console.log('foxy');
-    let samples;
-    while ((samples = streamvad.read(VAD_BYTES))) {
-      secsSilence = vad(samples);
-      streamToServer(samples);
-    }
+        streamvad.write(data);
 
-    if ((Date.now() - wakeTime > MAX_LISTEN_TIME) || (secsSilence >=  MAX_SIL_TIME)) {
-      var play = call('play', 'resources/end_spot.wav');
-      streamvad.end();
-      Wakeword.stop();
-      endStreamToServer();
-    }
+        while ((samples = streamvad.read(VAD_BYTES))) {
+          secsSilence = vad(samples);
+          streamToServer(samples);
+        }
+
+        if ((Date.now() - wakeTime > MAX_LISTEN_TIME) || (secsSilence >=  MAX_SIL_TIME)) {
+          var play = call('play', 'resources/end_spot.wav');
+          streamvad.end();
+          streamvad = null;
+          wakeTime = 0;
+          secsSilence = 0;
+          Wakeword.resume();
+          Wakeword.pause();
+          endStreamToServer();
+        }
+
   });
 }
 
