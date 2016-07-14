@@ -133,8 +133,6 @@ function listen() {
           var play = call('play', 'resources/end_spot.wav');
           streamvad.end();
           streamvad = null;
-          wakeTime = 0;
-          secsSilence = 0;
           Wakeword.resume();
           Wakeword.pause();
           endStreamToServer();
