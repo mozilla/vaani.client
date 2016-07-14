@@ -20,6 +20,15 @@ var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
 const config = JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("config.json"));
 
+// If an environment variable defines the oauth token, use that one
+// instead of the one in the config file. The vaani.setup server sets this
+// environment variable in /lib/systemd/system/vaani.service.d/evernote.conf.
+// When vaani.setup starts us with systemd, we'll get the user's current
+// oauth token that way.
+if (process.env.EVERNOTE_OAUTH_TOKEN) {
+  config.evernote.authtoken = process.env.EVERNOTE_OAUTH_TOKEN;
+}
+
 function connectServer(){
   var server = config.vaaniserver;
   server = url.parse(server, true, false);

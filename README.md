@@ -98,7 +98,11 @@ $ cp config.json.template config.json
 ```
 
 Then edit config.json as needed. In particular, you must specify the
-URL and password for the Vaani server you are using.
+URL and password for the Vaani server you are using. For testing, you
+also need to specify an Evernote developer token in this file. (When
+you deploy, however, you'll want to run Vaani with the user's Evernote
+OAUTH token in the environment variable EVERNOTE_OAUTH_TOKEN. More on
+this topic below.)
 
 Starting and Stopping Vaani
 ----------
@@ -119,6 +123,7 @@ If you want Vaani to be managed by systemd, first copy the service file into
 
 ```
 $ sudo cp config-files/vaani.service /lib/systemd/system
+$ sudo mkdir /lib/systemd/system/vaani.service.d
 ```
 
 Once the service file is installed, you can start and stop Vaani with
@@ -147,3 +152,8 @@ Instead of enabling Vaani directly, however, you may prefer to run the
 Vaani setup server when the system boots and rely on it to start Vaani
 once it has ensured that the device has a working wifi connection. See
 the vaani.setup repo at https://github.com/mozilla/vaani.setup
+
+The vaani.setup service will obtain the user's OAUTH token and use it
+as the value of the EVERNOTE_OAUTH_TOKEN environment variable in in
+/lib/systemd/system/vaani.setup.d/evernote.conf so that Vaani is
+started with a working oauth token.
