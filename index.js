@@ -138,7 +138,9 @@ function listen() {
           endStreamToServer();
         }
 
-  });
+  }, () => {   callSync('play', 'resources/start.wav'); } );
+
+
 }
 
 listen();
