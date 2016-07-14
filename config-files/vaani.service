@@ -1,0 +1,17 @@
+[Unit]
+Description=Vaani Client
+After=network.target
+
+[Service]
+Type=simple
+StandardOutput=journal
+StandardError=journal
+# Edit this line, if needed, to specify where you installed the server
+WorkingDirectory=/home/pi/vaani.client
+# Edit this line, if needed, to set the correct path to node
+ExecStart=/usr/local/bin/node index.js
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

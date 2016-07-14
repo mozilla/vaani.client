@@ -1,0 +1,10 @@
+{
+    "port": 443,
+    "wakeword": "foxy",
+    "secure": true,
+    "vaaniserver" : "put the wss:// URL to your vaani server here",
+    "passphrase": "put the password for your vaani server here",
+    "evernote": {
+        "authtoken": "put your oauth token for evernote here"
+    }
+}
