@@ -25,12 +25,13 @@ function connectServer(){
   server = url.parse(server, true, false);
   server.query.authtoken = config.evernote.authtoken;
   server.pathname = '/';
+  var secure = server.protocol == 'wss:';
   server = url.format(server);
 
   var options = {
     rejectUnauthorized: false
   };
-  if (config.secure) {
+  if (secure) {
     options.key =  fs.readFileSync(ssldir + 'client-key.pem');
     options.cert = fs.readFileSync(ssldir + 'client-crt.pem');
     options.ca =   fs.readFileSync(ssldir + 'ca-crt.pem');
