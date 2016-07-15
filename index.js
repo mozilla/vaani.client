@@ -107,11 +107,14 @@ function listen() {
   var streamvad = null;
   var wakeTime = 0;
   var secsSilence = 0;
+  let logFilename;
+  let logStream;
 
   Wakeword.listen([config.wakeword], 0.83, (data, word) => {
 
         let samples;
 
+        // this block is executed only the first time after the kw get spotted  per iteration
         if (!streamvad) {
           Wakeword.mic.pause();
           callSync('play', 'resources/hi.wav');
@@ -120,16 +123,21 @@ function listen() {
           streamvad = new MemoryStream();
           wakeTime = Date.now();
           dtStartSilence = totalSilencetime = null;
+          logStream  = fs.createWriteStream("logs/" +  new Date().getTime(), {'flags': 'a'});
         }
 
         streamvad.write(data);
 
         while ((samples = streamvad.read(VAD_BYTES))) {
           secsSilence = vad(samples);
+          if (config.logaudios){
+            logStream.write(samples);
+          }
           streamToServer(samples);
         }
 
         if ((Date.now() - wakeTime > MAX_LISTEN_TIME) || (secsSilence >=  MAX_SIL_TIME)) {
+          logStream.close();
           var play = call('play', 'resources/end_spot.wav');
           streamvad.end();
           streamvad = null;
