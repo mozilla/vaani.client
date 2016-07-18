@@ -1,9 +1,12 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// then all required modules
+"use strict";
+
+// load modules and initialize some vars
 const fs = require('fs');
 const child_process = require('child_process');
-
-// and set some vars
 var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
 var promisesox, soxpromiseresolve, soxpromisesreject ;
