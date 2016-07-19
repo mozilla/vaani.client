@@ -9,7 +9,7 @@ const fs = require('fs');
 const child_process = require('child_process');
 var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
-var promisesox, soxpromiseresolve, soxpromisesreject ;
+var soxpromiseresolve, soxpromisesreject ;
 
 module.exports =  {
 
@@ -29,7 +29,6 @@ module.exports =  {
     shelloutSync: (command, params) => child_process.spawnSync(command, params.split(' ')),
 
     setup: function(wakeword, config){
-
         this.config = config;
         this.wakeword = wakeword;
         this.wakeword.deviceName = this.config.micdevicename;
@@ -42,7 +41,7 @@ module.exports =  {
     setupSox: function() {
 
         // if not a valid value and no gain is being applied, we return
-        if ((this.config.micgain == 0))
+        if ((this.config.micgain === 0))
             return;
 
         this.sox = child_process.spawn('sox', [
@@ -86,16 +85,16 @@ module.exports =  {
 
     vad: function (data) {
         if (!data) {
-            return config.MAX_SIL_TIME;
+            return this.config.MAX_SIL_TIME;
         }
 
         var vadStatus = this.wakeword.decoder.processWebrtcVad(data);
 
-        if (lastvadStatus == 1 && vadStatus == 0){
+        if (lastvadStatus === 1 && vadStatus === 0){
             dtStartSilence = Date.now();
-        } else if (lastvadStatus == 0 && vadStatus == 0 && dtStartSilence){
+        } else if (lastvadStatus === 0 && vadStatus === 0 && dtStartSilence){
             totalSilencetime = Date.now() - dtStartSilence;
-        } else if (lastvadStatus == 0 && vadStatus == 1) {
+        } else if (lastvadStatus === 0 && vadStatus === 1) {
             totalSilencetime = 0;
         }
 
@@ -108,5 +107,11 @@ module.exports =  {
         this.shelloutSync('play', 'output.wav');
         this.microphone.resume();
         this.wakeword.resume();
+    },
+
+    playerror: function(){
+        this.microphone.pause();
+        this.shelloutSync('play', 'resources/sorry.wav');
+        this.microphone.resume();
     }
 }

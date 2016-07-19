@@ -6,7 +6,7 @@
 
 // load modules and initialize some vars
 const fs = require('fs');
-const WebSocket = require('ws')
+const websocket = require('ws')
 const url = require('url');
 const MemoryStream = require('memorystream');
 var ws;
@@ -18,11 +18,14 @@ module.exports = {
     wakeword: null,
     config: null,
     audiotools: null,
+    connectionfailed: null,
+    resetlisten: null,
 
-    setup: function(wakeword, config, audiotools){
+    setup: function(wakeword, config, audiotools, resetlisten){
         this.wakeword = wakeword;
         this.config = config;
         this.audiotools = audiotools;
+        this.resetlisten = resetlisten;
 
         // creating logs folder if necessary
         if ((this.config.logaudios)) {
@@ -43,6 +46,9 @@ module.exports = {
 
     connectServer: function (){
 
+        var wstream;
+        var isWav;
+
         // if we need to apply gain, we setup sox first to give it time to start
         if (this.config.micgain > 0) this.audiotools.setupSox();
 
@@ -52,14 +58,14 @@ module.exports = {
         server = url.parse(server, true, false);
         server.query.authtoken = this.config.evernote.authtoken;
         server.pathname = '/';
-        var secure = server.protocol == 'wss:';
+        var secure = server.protocol === 'wss:';
         server = url.format(server);
-        var wstream;
-        var isWav;
+        this.connectionfailed = false;
 
         var options = {
             rejectUnauthorized: false
         };
+
         if (secure) {
             options.key =  fs.readFileSync(ssldir + 'client-key.pem');
             options.cert = fs.readFileSync(ssldir + 'client-crt.pem');
@@ -67,7 +73,7 @@ module.exports = {
             options.passphrase = this.config.passphrase;
         }
 
-        ws = new WebSocket(server, null, options);
+        ws = new websocket(server, null, options);
 
         // if we are set to save the audiofiles, then we create it
         if (this.config.logaudios) logStream  = fs.createWriteStream("logsaudio/" +  new Date().getTime(), {'flags': 'a'});
@@ -77,20 +83,26 @@ module.exports = {
             wstream = fs.createWriteStream('output.wav');
         });
 
+        ws.on('error', (error) => {
+          console.log('Error Websocket', error);
+          this.connectionfailed = true;
+          this.resetlisten();
+          this.audiotools.playerror();
+        });
+
         ws.on('message', (data, flags) => {
             if (!isWav){
                 console.log(data); //-- TODO add score to metrics
                 isWav = true;
-                this.wakeword.resume();
-                this.wakeword.pause();
+                this.resetlisten();
             } else {
                 wstream.write(data);
             }
         });
 
         ws.on('close', () => {
-            wstream.end();
-            this.audiotools.playresponse();
+            if (wstream) wstream.end();
+            if (!this.connectionfailed) this.audiotools.playresponse();
             if (this.config.logaudios) logStream.close();
         });
     },
@@ -104,18 +116,18 @@ module.exports = {
                     streamServer.write(sampleswgain);
                 })
                 .catch((error) => {
-                streamServer.write(captureddata); })
+                streamServer.write(captureddata); });
         } else {
             streamServer.write(captureddata);
         }
 
-        if (ws.readyState == ws.OPEN) {
+        if (ws.readyState === ws.OPEN) {
             let samples;
             while ((samples = streamServer.read(this.config.VAD_BYTES))) {
                 // stream the samples
                 ws.send(samples);
                 // log the samples
-                if (this.config.logaudios) logStream.write(samples)
+                if (this.config.logaudios) logStream.write(samples);
             }
         }
     },
