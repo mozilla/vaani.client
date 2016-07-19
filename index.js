@@ -20,10 +20,23 @@ function listen() {
   var streamvad = null;
   var wakeTime = 0;
   var secsSilence = 0;
+  var abort;
 
+  const resetlisten = () => {
+      if (streamvad){
+          streamvad.end();
+          streamvad = null;
+      }
+
+      Wakeword.resume();
+      Wakeword.pause();
+      abort = true;
+  };
+  
   Wakeword.listen([config.wakeword], config.kwscore, (data, word) => {
 
         let samples;
+        console.log('wakeword..');
 
         // this block is executed just the first time after the kw get spotted per iteration
         if (!streamvad) {
@@ -31,6 +44,7 @@ function listen() {
           servertools.connectServer(Wakeword, audiotools);
           streamvad = new MemoryStream();
           wakeTime = Date.now();
+          abort = false;
         }
 
         streamvad.write(data);
@@ -40,18 +54,15 @@ function listen() {
           servertools.streamToServer(samples);
         }
 
-        if ((Date.now() - wakeTime > config.MAX_LISTEN_TIME) || (secsSilence >=  config.MAX_SIL_TIME)) {
+        if ((Date.now() - wakeTime > config.MAX_LISTEN_TIME) || (secsSilence >=  config.MAX_SIL_TIME) || abort) {
           audiotools.endsound();
-          streamvad.end();
-          streamvad = null;
-          Wakeword.resume();
-          Wakeword.pause();
+          resetlisten();
           servertools.endStreamToServer();
         }
     },
     () => {
         audiotools.setup(Wakeword, config);
-        servertools.setup(Wakeword, config, audiotools);
+        servertools.setup(Wakeword, config, audiotools, resetlisten);
     }
   );
 }
