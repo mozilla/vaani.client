@@ -1,0 +1,20 @@
+[Unit]
+Description=Vaani Auto Updater
+After=network.target
+
+[Service]
+Type=simple
+StandardOutput=journal
+StandardError=journal
+# Edit this line, if needed, to specify what user to run Vaani as
+# If you delete this line, it will run as root
+User=pi
+# Edit this line, if needed, to specify where you installed the server
+WorkingDirectory=/home/pi/vaani.client
+# Edit this line, if needed, to set the correct path to node
+ExecStart=git-auto-updater -r https://github.com/mozilla/vaani.client -- /usr/local/bin/node index.js
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
