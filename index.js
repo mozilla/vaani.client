@@ -27,7 +27,6 @@ function listen() {
           streamvad.end();
           streamvad = null;
       }
-
       Wakeword.resume();
       Wakeword.pause();
       abort = true;
@@ -36,8 +35,6 @@ function listen() {
   Wakeword.listen([config.wakeword], config.kwscore, (data, word) => {
 
         let samples;
-        console.log('wakeword..');
-
         // this block is executed just the first time after the kw get spotted per iteration
         if (!streamvad) {
           audiotools.greeting();

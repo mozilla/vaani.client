@@ -6,5 +6,14 @@
     "passphrase": "put the password for your vaani server here",
     "evernote": {
         "authtoken": "put your oauth token for evernote here"
-    }
+    },
+    "logaudios": 0, // 0 to not save audios and 1 to save it
+    "micgain": 0, // gain level in dbs to apply to the mic
+    "vadaggressiveness": "0", // vad aggressiveness
+    "kwscore": 0.83, // threshold of keyword score
+    "micdevicename": "name of the microphone device",
+    "ssldir": "folder to ssl certs",
+    "VAD_BYTES":  640,
+    "MAX_LISTEN_TIME": 7500,
+    "MAX_SIL_TIME": 2000
 }
