@@ -3,7 +3,7 @@
     "wakeword": "foxy",
     "vaaniserver" : "wss://vaani3.us-west-2.elasticbeanstalk.com",
     "logaudios": 1,
-    "micgain": 55,
+    "micgain": 30,
     "vadaggressiveness": "0",
     "kwscore": 0.83,
     "micdevicename": "plughw:2,0",
