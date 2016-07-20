@@ -29,6 +29,12 @@ module.exports =  {
     shelloutSync: (command, params) => child_process.spawnSync(command, params.split(' ')),
 
     setup: function(wakeword, config){
+
+        if (process.platform === "linux") {
+            this.shelloutSync('amixer',  "-c 2 set PCM 100%");
+            this.shelloutSync('amixer',  "-c 3 set PCM 100%");
+        }
+
         this.config = config;
         this.wakeword = wakeword;
         this.wakeword.deviceName = this.config.micdevicename;
@@ -36,6 +42,9 @@ module.exports =  {
         this.microphone.pause();
         this.playaudio('resources/start.wav');
         this.microphone.resume();
+
+
+
     },
 
     playaudio: function(path){
@@ -87,7 +96,7 @@ module.exports =  {
     endsound: function(){
         if (this.config.micgain) this.sox.kill();
         this.microphone.pause();
-        this.shelloutSync('play', 'resources/end_spot.wav');
+        this.playaudio('resources/end_spot.wav');
         this.microphone.resume();
     },
 
