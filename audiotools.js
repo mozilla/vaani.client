@@ -83,7 +83,7 @@ module.exports =  {
         this.microphone.resume();
         dtStartSilence = totalSilencetime = null;
     },
-ß
+
     endsound: function(){
         if (this.config.micgain) this.sox.kill();
         this.microphone.pause();
