@@ -34,8 +34,16 @@ module.exports =  {
         this.wakeword.deviceName = this.config.micdevicename;
         this.microphone = wakeword.getMic();
         this.microphone.pause();
-        this.shelloutSync('play', 'resources/start.wav');
+        this.playaudio('resources/start.wav');
         this.microphone.resume();
+    },
+
+    playaudio: function(path){
+        if (process.platform === "darwin") {
+            this.shelloutSync('play', path);
+        } else {
+            this.shelloutSync('aplay', ['-D', this.config.spkdevicename, path].join(' '));
+        }
     },
 
     setupSox: function() {
@@ -71,7 +79,7 @@ module.exports =  {
 
     greeting: function(){
         this.microphone.pause();
-        this.shelloutSync('play', 'resources/hi.wav');
+        this.playaudio('resources/hi.wav');
         this.microphone.resume();
         dtStartSilence = totalSilencetime = null;
     },
@@ -104,14 +112,14 @@ module.exports =  {
 
     playresponse: function(){
         this.microphone.pause();
-        this.shelloutSync('play', 'output.wav');
+        this.playaudio('output.wav');
         this.microphone.resume();
         this.wakeword.resume();
     },
 
     playerror: function(){
         this.microphone.pause();
-        this.shelloutSync('play', 'resources/sorry.wav');
+        this.playaudio('resources/sorry.wav');
         this.microphone.resume();
     }
 }
