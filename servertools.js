@@ -21,11 +21,15 @@ module.exports = {
     connectionfailed: null,
     resetlisten: null,
 
+    secret: null,
+
+
     setup: function(wakeword, config, audiotools, resetlisten){
         this.wakeword = wakeword;
         this.config = config;
         this.audiotools = audiotools;
         this.resetlisten = resetlisten;
+        this.secret =  JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("secret.json"));
 
         // creating logs folder if necessary
         if ((this.config.logaudios)) {
@@ -40,7 +44,7 @@ module.exports = {
         // When vaani.setup starts us with systemd, we'll get the user's current
         // oauth token that way.
         if (process.env.EVERNOTE_OAUTH_TOKEN) {
-            this.config.evernote.authtoken = process.env.EVERNOTE_OAUTH_TOKEN;
+            this.secret.evernote.authtoken = process.env.EVERNOTE_OAUTH_TOKEN;
         }
     },
 
@@ -56,7 +60,7 @@ module.exports = {
         var ssldir = this.config.ssldir;
         var server = this.config.vaaniserver;
         server = url.parse(server, true, false);
-        server.query.authtoken = this.config.evernote.authtoken;
+        server.query.authtoken = this.secret.evernote.authtoken;
         server.pathname = '/';
         var secure = server.protocol === 'wss:';
         server = url.format(server);
@@ -70,7 +74,7 @@ module.exports = {
             options.key =  fs.readFileSync(ssldir + 'client-key.pem');
             options.cert = fs.readFileSync(ssldir + 'client-crt.pem');
             options.ca =   fs.readFileSync(ssldir + 'ca-crt.pem');
-            options.passphrase = this.config.passphrase;
+            options.passphrase = this.secret.passphrase;
         }
 
         ws = new websocket(server, null, options);

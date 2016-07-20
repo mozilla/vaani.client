@@ -1,0 +1,15 @@
+{
+    "port": 443,
+    "wakeword": "foxy",
+    "vaaniserver" : "wss://vaani3.us-west-2.elasticbeanstalk.com",
+    "logaudios": 1,
+    "micgain": 0,
+    "vadaggressiveness": "0",
+    "kwscore": 0.83,
+    "micdevicename": "default",
+    "spkdevicename": "default",
+    "ssldir": "./resources/ssl/",
+    "VAD_BYTES":  640,
+    "MAX_LISTEN_TIME": 7500,
+    "MAX_SIL_TIME": 2000
+}
