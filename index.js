@@ -26,6 +26,7 @@ function listen() {
 
   logging.setup('77287273737');
 
+
   const resetlisten = () => {
       if (streamvad){
           streamvad.end();
