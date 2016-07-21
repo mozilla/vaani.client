@@ -44,6 +44,7 @@ module.exports = {
         // When vaani.setup starts us with systemd, we'll get the user's current
         // oauth token that way.
         if (process.env.EVERNOTE_OAUTH_TOKEN) {
+            this.secret.evernote = this.secret.evernote || {};
             this.secret.evernote.authtoken = process.env.EVERNOTE_OAUTH_TOKEN;
         }
     },
