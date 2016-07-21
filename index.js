@@ -7,6 +7,8 @@
 // first we load the config file
 var fs = require('fs');
 var config = JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("config.json"));
+var logging = require('./logging');
+
 
 // then all required modules
 const Wakeword = require('wakeword');
@@ -21,6 +23,8 @@ function listen() {
   var wakeTime = 0;
   var secsSilence = 0;
   var abort;
+
+  logging.setup('222219191919');
 
   const resetlisten = () => {
       if (streamvad){
@@ -58,6 +62,7 @@ function listen() {
         }
     },
     () => {
+        logging.addmetric("category", "action", "label", 987654321);
         audiotools.setup(Wakeword, config);
         servertools.setup(Wakeword, config, audiotools, resetlisten);
     }
