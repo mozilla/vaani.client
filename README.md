@@ -85,19 +85,19 @@ microphone gain with:
 alsamixer -c 1
 ```
 
-The `config.json` File
+The `secret.json` File
 ----------------------
 
 The Vaani client reads credentials and other configuration information
-from a file named `config.json` when it starts up. You must create
+from a file named `secret.json` when it starts up. You must create
 this file before you can run the program. Start by copying the
 template file:
 
 ```
-$ cp config.json.template config.json
+$ cp secret.json.template secret.json
 ```
 
-Then edit config.json as needed. In particular, you must specify the
+Then edit secret.json as needed. In particular, you must specify the
 URL and password for the Vaani server you are using. For testing, you
 also need to specify an Evernote developer token in this file. (When
 you deploy, however, you'll want to run Vaani with the user's Evernote
