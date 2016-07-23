@@ -51,8 +51,7 @@ module.exports =  {
         if (process.platform === "darwin") {
             this.shelloutSync('play', path);
         } else {
-            var dev = this.config.spkdevicename;
-            this.shelloutSync('aplay', (dev ? '-D ' + dev : '') + path);
+            this.shelloutSync('aplay', ['-D', this.config.spkdevicename, path].join(' '));
         }
     },
 
