@@ -24,7 +24,7 @@ function listen() {
   var secsSilence = 0;
   var abort;
 
-  logging.setup('222219191919');
+  logging.setup('77287273737');
 
   const resetlisten = () => {
       if (streamvad){
@@ -62,7 +62,7 @@ function listen() {
         }
     },
     () => {
-        logging.addmetric("category", "action", "label", 987654321);
+        logging.addmetric("boot", "sucessfull", "ok", 1);
         audiotools.setup(Wakeword, config);
         servertools.setup(Wakeword, config, audiotools, resetlisten);
     }

@@ -21,16 +21,16 @@ module.exports = {
         this.clientId = clientId;
 
         this.options = {
-            locale: 'locale',
-            os: 'os',
-            os_version: 'os_version',
-            device: 'device',
-            app_name: 'app_name',
-            app_version: 'app_version',
-            app_update_channel: 'app_update_channel',
-            app_build_id: 'app_build_id',
-            app_platform: 'app_platform',
-            arch: 'arch',
+            locale: 'pt-br',
+            os: 'osx',
+            os_version: 'elcapitan',
+            device: 'pc',
+            app_name: 'vaani-test',
+            app_version: '0.1',
+            app_update_channel: 'develop',
+            app_build_id: '0.1',
+            app_platform: 'node',
+            arch: 'x64',
             logger: logger
         };
 
