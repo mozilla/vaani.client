@@ -9,7 +9,6 @@ const fs = require('fs');
 const child_process = require('child_process');
 var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
-var soxpromiseresolve, soxpromisesreject ;
 
 module.exports =  {
 
@@ -23,6 +22,10 @@ module.exports =  {
     config: null,
 
     sox: null,
+
+    _wspush: null,
+
+    streamServer:null,
 
     shelloutAsync: (command, params) => child_process.spawn(command, params.split(' ')),
 
@@ -62,28 +65,38 @@ module.exports =  {
             return;
 
         this.sox = child_process.spawn('sox', [
-            '-d',
-            '-q',
-            '-b', '16',
-            '-r', '16000',
-            '-c', '1',
             '-t', 'raw',
+            '-b', '16',
+            '-e', 'signed',
+            '-c', '1',
+            '-r', '16000',
+            '-',
+            '-t', 'raw',
+            '-b', '16',
+            '-e', 'signed',
+            '-c', '1',
+            '-r', '16000',
             '-',
             'vol', this.config.micgain + "dB"
         ]);
 
-        this.sox.stdout.on('data', (data) => { soxpromiseresolve(data); } );
-        this.sox.stdout.on('close', () => { });
-        this.sox.stdin .on('error', (error) => { soxpromisesreject(error); } );
+        this.sox.stdout.on('data', (data) => {
+            console.log('data sox');
+            this.streamServer.write(data);
+            this._wspush();
+        } );
+        this.sox.stdout.on('close', () => { console.log('close sox'); });
+        this.sox.stdin .on('error', (error) => {
+            console.log("erro sox", error);
+            streamServer.write(captureddata);
+            this._wspush();
+        } );
     },
 
-    feedSox: function(data){
-        var promisesox = new Promise((resolve, reject) => {
-            soxpromiseresolve = resolve;
-            soxpromisesreject = reject;
-        });
+    feedSox: function(data,streamServer,_wspush){
+        this.streamServer = streamServer;
+        this._wspush = _wspush;
         this.sox.stdin.write(data);
-        return promisesox;
     },
 
     greeting: function(){
