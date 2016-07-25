@@ -1,11 +1,11 @@
 {
     "port": 443,
     "wakeword": "foxy",
-    "vaaniserver" : "wss://vaani3.us-west-2.elasticbeanstalk.com",
+    "vaaniserver" : "wss://vaani-google.us-west-2.elasticbeanstalk.com",
     "logaudios": 1,
     "micgain": 30,
     "vadaggressiveness": "0",
-    "kwscore": 0.83,
+    "kwscore": 0.87,
     "micdevicename": "plughw:2,0",
     "spkdevicename": "plughw:3,0",
     "ssldir": "./resources/ssl/",
