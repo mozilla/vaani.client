@@ -47,15 +47,21 @@ module.exports = {
             this.secret.evernote = this.secret.evernote || {};
             this.secret.evernote.authtoken = process.env.EVERNOTE_OAUTH_TOKEN;
         }
+
+        // If we are going to be amplifying the audio data, convert
+        // from decibels to the amplification factor now
+        if (this.config.micgain) {
+            this.amplification =
+                this.audiotools.amplificationFactor(this.config.micgain);
+            console.log('Configured gain of', this.config.micgain,
+                        'will multiply audio samples by', this.amplification);
+        }
     },
 
     connectServer: function (){
 
         var wstream;
         var isWav;
-
-        // if we need to apply gain, we setup sox first to give it time to start
-        if (this.config.micgain > 0) this.audiotools.setupSox();
 
         streamServer = new MemoryStream();
         var ssldir = this.config.ssldir;
@@ -125,15 +131,12 @@ module.exports = {
     },
 
     streamToServer: function (captureddata) {
-
-        if (this.config.micgain > 0) {
-            // here we get the Promise back
-            this.audiotools.feedSox(captureddata,streamServer,this._wspush);
-        } else {
-            streamServer.write(captureddata);
-            this._wspush();
+        if (this.amplification) {
+            this.audiotools.amplify(captureddata, this.amplification)
         }
 
+        streamServer.write(captureddata);
+        this._wspush();
     },
 
     endStreamToServer : function () {
