@@ -111,20 +111,7 @@ module.exports = {
         });
     },
 
-    streamToServer: function (captureddata) {
-
-        if (this.config.micgain > 0) {
-            // here we get the Promise back
-            this.audiotools.feedSox(captureddata)
-                .then((sampleswgain) => {
-                    streamServer.write(sampleswgain);
-                })
-                .catch((error) => {
-                streamServer.write(captureddata); });
-        } else {
-            streamServer.write(captureddata);
-        }
-
+    _wspush: function(){
         if (ws.readyState === ws.OPEN) {
             let samples;
             while ((samples = streamServer.read(this.config.VAD_BYTES))) {
@@ -134,6 +121,18 @@ module.exports = {
                 if (this.config.logaudios) logStream.write(samples);
             }
         }
+    },
+
+    streamToServer: function (captureddata) {
+
+        if (this.config.micgain > 0) {
+            // here we get the Promise back
+            this.audiotools.feedSox(captureddata,streamServer,this._wspush);
+        } else {
+            streamServer.write(captureddata);
+            this._wspush();
+        }
+
     },
 
     endStreamToServer : function () {
