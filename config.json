@@ -5,7 +5,7 @@
     "logaudios": 1,
     "micgain": 30,
     "vadaggressiveness": "0",
-    "kwscore": 0.83,
+    "kwscore": 0.87,
     "micdevicename": "plughw:2,0",
     "spkdevicename": "plughw:3,0",
     "ssldir": "./resources/ssl/",
