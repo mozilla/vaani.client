@@ -87,9 +87,7 @@ module.exports =  {
         } );
         this.sox.stdout.on('close', () => { console.log('close sox'); });
         this.sox.stdin .on('error', (error) => {
-            console.log("erro sox", error);
-            streamServer.write(captureddata);
-            this._wspush();
+            console.log("error sox", error);
         } );
     },
 
