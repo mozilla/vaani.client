@@ -7,13 +7,15 @@
 // load modules and initialize some vars
 const fs = require('fs');
 const child_process = require('child_process');
+const leds = require('./ledshelper.js');
+
 var lastvadStatus = 0;
 var dtStartSilence, totalSilencetime;
 
 module.exports =  {
 
     /**
-     * Holds a reference for the microphone.
+     * Holds a reference to the microphone.
      */
     microphone: null,
 
@@ -93,13 +95,16 @@ module.exports =  {
         this.playaudio('output.wav');
         this.microphone.resume();
         this.wakeword.resume();
+        leds.listening();
         this.logging.addmetric("tts", "play", "ok", 1);
     },
 
     playerror: function(){
+        leds.error();
         this.microphone.pause();
         this.playaudio('resources/sorry.wav');
         this.microphone.resume();
+        leds.listening();
         this.logging.addmetric("tts", "play", "error", -1);
     },
 

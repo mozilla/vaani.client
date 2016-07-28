@@ -14,6 +14,7 @@ var logging = require('./logging');
 const Wakeword = require('./wakeword');
 const audiotools = require('./audiotools.js');
 const servertools = require('./servertools.js');
+const leds = require('./ledshelper.js');
 const MemoryStream = require('memorystream');
 const getMac = require('getmac');
 
@@ -40,8 +41,9 @@ function listen() {
   Wakeword.listen([config.wakeword], config.kwscore, (data, word) => {
 
         let samples;
-        // this block is executed just the first time after the kw get spotted per iteration
+        // this block is executed only the first time after the kw get spotted per iteration
         if (!streamvad) {
+          leds.processing();
           audiotools.greeting();
           servertools.connectServer(Wakeword, audiotools);
           streamvad = new MemoryStream();
@@ -64,7 +66,9 @@ function listen() {
         }
     },
     () => {
-
+        leds.deviceready();
+        audiotools.setup(Wakeword, config, logging);
+        servertools.setup(Wakeword, config, audiotools, resetlisten, logging);
         getMac.getMac(function(err,macAddress){
             if (err)  console.warn('No Mac');
             logging.setup(macAddress.replace(/:/g,''));
@@ -72,8 +76,6 @@ function listen() {
             Wakeword.logging = logging;
         });
 
-        audiotools.setup(Wakeword, config, logging);
-        servertools.setup(Wakeword, config, audiotools, resetlisten, logging);
     }
   );
 }
