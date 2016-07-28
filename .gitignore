@@ -1,5 +1,6 @@
 node_modules
 .DS_Store
+.vaanirc
 *.log
 /output.wav
 /wakewords.txt
