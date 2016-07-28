@@ -4,11 +4,29 @@
 
 "use strict";
 
-// first we load the config file
-var fs = require('fs');
-var config = JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("config.json"));
-var logging = require('./logging');
+const fs = require('fs');
+const logging = require('./logging');
 
+const configLoader = function () {
+    var config = {}, obj;
+    Array.prototype.slice.call(arguments, 0).forEach(file => {
+        console.log(file);
+        if (fs.existsSync(file)) {
+            try {
+                obj = JSON.parse(fs.readFileSync(file));
+            } catch (ex) {
+                console.error('Problem reading configuration file: ' + file);
+            }
+            for (var key in obj) {
+                config[key] = obj[key];
+            }
+        }
+    });
+    return config;
+};
+
+// first we load the config file
+var config = configLoader('config.json', '.vaanirc');
 
 // then all required modules
 const Wakeword = require('./wakeword');
@@ -37,7 +55,7 @@ function listen() {
       Wakeword.pause();
       abort = true;
   };
-  
+
   Wakeword.listen([config.wakeword], config.kwscore, (data, word) => {
 
         let samples;
