@@ -112,6 +112,7 @@ module.exports = {
         });
 
         ws.on('close', () => {
+             console.log('Closing connection with the server'); 
             if (wstream) wstream.end();
             if (!this.connectionfailed) this.audiotools.playresponse();
             if (this.config.logaudios) logStream.close();
