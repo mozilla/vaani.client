@@ -11,7 +11,7 @@ var logging = require('./logging');
 
 
 // then all required modules
-const Wakeword = require('wakeword');
+const Wakeword = require('./wakeword');
 const audiotools = require('./audiotools.js');
 const servertools = require('./servertools.js');
 const MemoryStream = require('memorystream');
