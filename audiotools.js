@@ -25,11 +25,13 @@ module.exports =  {
 
     streamServer:null,
 
+    logging: null,
+
     shelloutAsync: (command, params) => child_process.spawn(command, params.split(' ')),
 
     shelloutSync: (command, params) => child_process.spawnSync(command, params.split(' ')),
 
-    setup: function(wakeword, config){
+    setup: function(wakeword, config, logging){
 
         if (process.platform === "linux") {
             this.shelloutSync('amixer',  "-c 2 set PCM 100%");
@@ -38,6 +40,7 @@ module.exports =  {
 
         this.config = config;
         this.wakeword = wakeword;
+        this.logging = logging;
         this.wakeword.deviceName = this.config.micdevicename;
         this.microphone = wakeword.getMic();
         this.microphone.pause();
@@ -90,6 +93,7 @@ module.exports =  {
         this.playaudio('output.wav');
         this.microphone.resume();
         this.wakeword.resume();
+        this.logging.addmetric("tts", "play", "ok", 1);
     },
 
     playerror: function(){
@@ -127,5 +131,6 @@ module.exports =  {
             else if (s < -32768) s = -32768
             samples[i] = s;
         }
+        this.logging.addmetric("tts", "play", "error", -1);
     }
 }

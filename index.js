@@ -15,6 +15,7 @@ const Wakeword = require('./wakeword');
 const audiotools = require('./audiotools.js');
 const servertools = require('./servertools.js');
 const MemoryStream = require('memorystream');
+const getMac = require('getmac');
 
 function listen() {
 
@@ -24,7 +25,6 @@ function listen() {
   var secsSilence = 0;
   var abort;
 
-  logging.setup('77287273737');
 
 
   const resetlisten = () => {
@@ -60,12 +60,20 @@ function listen() {
           audiotools.endsound();
           resetlisten();
           servertools.endStreamToServer();
+          logging.addmetric("userspeech", "end", "ok", 1);
         }
     },
     () => {
-        logging.addmetric("boot", "sucessfull", "ok", 1);
-        audiotools.setup(Wakeword, config);
-        servertools.setup(Wakeword, config, audiotools, resetlisten);
+
+        getMac.getMac(function(err,macAddress){
+            if (err)  console.warn('No Mac');
+            logging.setup(macAddress.replace(/:/g,''));
+            logging.addmetric("boot", "sucessfull", "ok", 1);
+            Wakeword.logging = logging;
+        });
+
+        audiotools.setup(Wakeword, config, logging);
+        servertools.setup(Wakeword, config, audiotools, resetlisten, logging);
     }
   );
 }

@@ -63,6 +63,8 @@ module.exports = {
     detected: null,
     pendingState: null,
 
+    logging : null,
+
     /**
      * Retrieves the PocketSphinx configuration. This configuration will be used
      * whenever the next PocketSphinx decoder is created.
@@ -237,9 +239,11 @@ module.exports = {
                         if (hyp && hyp.hypstr) {
                             this.decoder.endUtt();
                             if (this._checkScore(scoreThreshold)) {
+                                this.logging.addmetric("wakeword", "spot", "ok_score", this.lastScore);
                                 this.detected = hyp.hypstr;
                                 this.state = stateEnum.STREAMING;
                             } else {
+                                this.logging.addmetric("wakeword", "spot", "low_score", this.lastScore);
                                 this.decoder.startUtt();
                             }
                         }
