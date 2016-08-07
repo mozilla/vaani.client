@@ -100,6 +100,7 @@ module.exports =  {
         this.microphone.pause();
         this.playaudio('resources/sorry.wav');
         this.microphone.resume();
+        this.logging.addmetric("tts", "play", "error", -1);
     },
 
     // Convert a gain (in decibels) to an amplitude amplification factor. See:
@@ -131,6 +132,5 @@ module.exports =  {
             else if (s < -32768) s = -32768
             samples[i] = s;
         }
-        this.logging.addmetric("tts", "play", "error", -1);
     }
 }
