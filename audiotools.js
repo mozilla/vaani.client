@@ -21,8 +21,6 @@ module.exports =  {
 
     config: null,
 
-    sox: null,
-
     _wspush: null,
 
     streamServer:null,
@@ -45,9 +43,6 @@ module.exports =  {
         this.microphone.pause();
         this.playaudio('resources/start.wav');
         this.microphone.resume();
-
-
-
     },
 
     playaudio: function(path){
@@ -58,45 +53,6 @@ module.exports =  {
         }
     },
 
-    setupSox: function() {
-
-        // if not a valid value and no gain is being applied, we return
-        if ((this.config.micgain === 0))
-            return;
-
-        this.sox = child_process.spawn('sox', [
-            '-t', 'raw',
-            '-b', '16',
-            '-e', 'signed',
-            '-c', '1',
-            '-r', '16000',
-            '-',
-            '-t', 'raw',
-            '-b', '16',
-            '-e', 'signed',
-            '-c', '1',
-            '-r', '16000',
-            '-',
-            'vol', this.config.micgain + "dB"
-        ]);
-
-        this.sox.stdout.on('data', (data) => {
-            console.log('data sox');
-            this.streamServer.write(data);
-            this._wspush();
-        } );
-        this.sox.stdout.on('close', () => { console.log('close sox'); });
-        this.sox.stdin .on('error', (error) => {
-            console.log("error sox", error);
-        } );
-    },
-
-    feedSox: function(data,streamServer,_wspush){
-        this.streamServer = streamServer;
-        this._wspush = _wspush;
-        this.sox.stdin.write(data);
-    },
-
     greeting: function(){
         this.microphone.pause();
         this.playaudio('resources/hi.wav');
@@ -105,7 +61,6 @@ module.exports =  {
     },
 
     endsound: function(){
-        if (this.config.micgain) this.sox.kill();
         this.microphone.pause();
         this.playaudio('resources/end_spot.wav');
         this.microphone.resume();
@@ -141,5 +96,36 @@ module.exports =  {
         this.microphone.pause();
         this.playaudio('resources/sorry.wav');
         this.microphone.resume();
+    },
+
+    // Convert a gain (in decibels) to an amplitude amplification factor. See:
+    // http://www.sengpielaudio.com/calculator-FactorRatioLevelDecibel.htm
+    amplificationFactor: function(gain) {
+        return Math.sqrt(Math.pow(10, gain/10));
+    },
+
+    //
+    // Amplify data by the specified gain, modifying the buffer in place.
+    //
+    //  - data is a Node Buffer object that contains little-endian signed
+    //    16-bit values.
+    //  - factor is the desired amplification. The samples will be multiplied
+    //    by this number.
+    //
+    amplify: function(data, factor) {
+        // View the bytes in the buffer as signed 16 bit values
+        var samples = new Int16Array(data.buffer,
+                                     data.byteOffset,
+                                     data.byteLength / 2);
+
+        // Now do the multiplication, clipping values rather than
+        // wrapping around.
+        for(var i = 0; i < samples.length; i++) {
+            var s = samples[i];
+            s = Math.round(s * factor);
+            if (s > 32767) s = 32767
+            else if (s < -32768) s = -32768
+            samples[i] = s;
+        }
     }
 }
