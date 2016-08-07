@@ -17,7 +17,7 @@ module.exports = {
     clientId : null,
     options  : null,
 
-    setup: function(clientId){
+    setup: function (clientId){
         this.clientId = clientId;
 
         this.options = {
@@ -34,14 +34,12 @@ module.exports = {
             logger: logger
         };
 
-        process.stdout.write("Instantiating Metrics object\n");
         this.metrics = new Metrics(this.clientId, this.options);
     },
 
-    addmetric : function(category, action, label, value_integer){
-        this.metrics.recordEvent(category, action, label, value_integer);
-        process.stdout.write("Recording event...\n");
-
+    addmetric : function (category, action, label, value){
+        parseInt(value) ? this.metrics.recordEventAsync(category, action, label, value) :
+                this.metrics.recordFloatingPointEventAsync(category, action, label, value);
     }
 
 }

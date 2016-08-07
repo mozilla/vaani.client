@@ -20,15 +20,17 @@ module.exports = {
     audiotools: null,
     connectionfailed: null,
     resetlisten: null,
-
     secret: null,
+    logging: null,
 
 
-    setup: function(wakeword, config, audiotools, resetlisten){
+    setup: function(wakeword, config, audiotools, resetlisten, logging){
         this.wakeword = wakeword;
         this.config = config;
         this.audiotools = audiotools;
         this.resetlisten = resetlisten;
+        this.logging = logging;
+
         this.secret =  JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("secret.json"));
 
         // creating logs folder if necessary
@@ -99,11 +101,18 @@ module.exports = {
           this.connectionfailed = true;
           this.resetlisten();
           this.audiotools.playerror();
+          this.logging.addmetric("ws", "error", error, -1);
         });
 
         ws.on('message', (data, flags) => {
             if (!isWav){
-                console.log(data); //-- TODO add score to metrics
+                try {
+                    console.log('server response', data); 
+                    var parsedresponse = JSON.parse(data);
+                    this.logging.addmetric("ws", "stt_json", "ok", parsedresponse.confidence);
+                } catch (e) {
+                    console.error("server response isn't a valid JSON string");
+                }
                 isWav = true;
                 this.resetlisten();
             } else {
@@ -116,6 +125,7 @@ module.exports = {
             if (wstream) wstream.end();
             if (!this.connectionfailed) this.audiotools.playresponse();
             if (this.config.logaudios) logStream.close();
+            this.logging.addmetric("ws", "close_play", "ok", 1);
         });
     },
 
