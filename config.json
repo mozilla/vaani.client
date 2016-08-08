@@ -1,8 +1,8 @@
 {
     "port": 443,
     "wakeword": "foxy",
-    "vaaniserver" : "wss://vaani-google.us-west-2.elasticbeanstalk.com",
-    "logaudios": 1,
+    "vaaniserver" : "wss://vaaniserver.us-west-2.elasticbeanstalk.com",
+    "logaudios": 0,
     "micgain": 0,
     "vadaggressiveness": "0",
     "kwscore": 0.86,
