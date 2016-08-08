@@ -93,7 +93,11 @@ module.exports =  {
 
     playresponse: function(){
         this.microphone.pause();
-        this.playaudio('output.wav');
+        // we check if the file is empty. if is, we play the sorry message
+        if (fs.statSync('output.wav').size === 0)
+            this.playaudio('resources/error.wav');
+        else
+            this.playaudio('output.wav');
         this.microphone.resume();
         this.wakeword.resume();
         leds.listening();
