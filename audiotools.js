@@ -46,7 +46,8 @@ module.exports =  {
         this.wakeword.deviceName = this.config.micdevicename;
         this.microphone = wakeword.getMic();
         this.microphone.pause();
-        this.playaudio('resources/start.wav');
+        if ((process.env.VAANI_BOOTS || 1) < 2)
+            this.playaudio('resources/start.wav');
         this.microphone.resume();
     },
 
