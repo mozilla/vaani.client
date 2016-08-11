@@ -361,8 +361,9 @@ module.exports = {
 
         var buffer = Concat(callback);
         var speechSampleTime = Date.now();
-
         var stream = this.getMic().getAudioStream();
+        var lastmin;
+
         stream.on('data', data => {
             var now = Date.now();
             buffer.write(data);
@@ -370,6 +371,10 @@ module.exports = {
                 buffer.end();
                 buffer = Concat(callback);
                 speechSampleTime = now;
+            }
+            if ((new Date(now).getSeconds() === 0) && (new Date(now).getMinutes() !== lastmin)) {
+                lastmin = new Date(now).getMinutes();
+                this.logging.addmetric("heartbeat", "hb", "ok", 1);
             }
         });
 
