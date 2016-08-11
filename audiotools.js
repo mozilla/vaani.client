@@ -29,6 +29,8 @@ module.exports =  {
 
     logging: null,
 
+    end_sound_played: null,
+
     shelloutAsync: (command, params) => child_process.spawn(command, params.split(' ')),
 
     shelloutSync: (command, params) => child_process.spawnSync(command, params.split(' ')),
@@ -60,6 +62,7 @@ module.exports =  {
     },
 
     greeting: function(){
+        this.end_sound_played = false;
         this.microphone.pause();
         this.playaudio('resources/hi.wav');
         this.microphone.resume();
@@ -68,7 +71,12 @@ module.exports =  {
 
     endsound: function(){
         this.microphone.pause();
-        this.playaudio('resources/end_spot.wav');
+        // for situations when the server has VAD and respond before the client VAD
+        // detects silence, we need to prevent the client from playing the beep twice
+        if (!this.end_sound_played) {
+            this.playaudio('resources/end_spot.wav');
+            this.end_sound_played = true;
+        }
         this.microphone.resume();
     },
 

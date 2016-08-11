@@ -106,8 +106,9 @@ module.exports = {
 
         ws.on('message', (data, flags) => {
             if (!isWav){
+                this.audiotools.endsound();
                 try {
-                    console.log('server response', data); 
+                    console.log('server response', data);
                     var parsedresponse = JSON.parse(data);
                     this.logging.addmetric("ws", "stt_json", "ok", parsedresponse.confidence);
                 } catch (e) {
