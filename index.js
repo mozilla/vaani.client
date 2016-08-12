@@ -56,7 +56,8 @@ function listen() {
       abort = true;
   };
 
-  Wakeword.listen([config.wakeword], config.kwscore, (data, word) => {
+  
+  Wakeword.listen([config.wakeword], config.kwscore, config.kwsthreshold, (data, word) => {
 
         let samples;
         // this block is executed only the first time after the kw get spotted per iteration
