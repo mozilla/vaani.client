@@ -181,7 +181,7 @@ module.exports = {
      * @param {number} scoreThreshold The recognition score threshold (e.g. 0.87)
      * @param {onwakeCallback} onwake The callback to handle microphone data
      */
-    listen: function(words, scoreThreshold, onwake, onready) {
+    listen: function(words, scoreThreshold, kwsThreshold, onwake, onready) {
         switch (this.state) {
             case stateEnum.LOADING:
                 this.pendingState = {
@@ -267,7 +267,7 @@ module.exports = {
                     }
 
                     for (var word of words) {
-                        Fs.write(file, `${word}/1e-20/\n`);
+                        Fs.write(file, `${word}/${kwsThreshold}/\n`);
                     }
 
                     Fs.close(file, e => {

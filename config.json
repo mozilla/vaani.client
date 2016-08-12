@@ -1,15 +1,16 @@
 {
     "port": 443,
-    "wakeword": "foxy",
+    "wakeword": "list maker",
     "vaaniserver" : "wss://vaaniserver.us-west-2.elasticbeanstalk.com ",
     "logaudios": 0,
     "micgain": 0,
     "vadaggressiveness": "0",
-    "kwscore": 0.83,
+    "kwscore": 0.80,
+    "kwsthreshold": "1e-40",
     "micdevicename": "plug:mic",
     "spkdevicename": "plug:speaker",
     "ssldir": "./resources/ssl/",
     "VAD_BYTES":  640,
     "MAX_LISTEN_TIME": 7500,
-    "MAX_SIL_TIME": 2000
+    "MAX_SIL_TIME": 1500
 }
