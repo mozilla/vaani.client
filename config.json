@@ -1,7 +1,7 @@
 {
     "port": 443,
     "wakeword": "list maker",
-    "vaaniserver" : "wss://vaaniserver.us-west-2.elasticbeanstalk.com ",
+    "vaaniserver" : "wss://vaaniserver.us-west-2.elasticbeanstalk.com",
     "logaudios": 0,
     "micgain": 0,
     "vadaggressiveness": "0",
