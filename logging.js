@@ -5,6 +5,11 @@
 "use strict";
 
 var Metrics = require('cd-metrics');
+const domain = require('domain');
+const d = domain.create();
+d.on('error', (er) => {
+    console.error('Caught error on cd-metrics', er);
+});
 
 var logger = function() {
     var args = Array.from(arguments);
@@ -16,7 +21,6 @@ module.exports = {
     metrics : null,
     clientId : null,
     options  : null,
-
     setup: function (clientId){
         this.clientId = clientId;
 
@@ -38,8 +42,12 @@ module.exports = {
     },
 
     addmetric : function (category, action, label, value){
-        parseInt(value) ? this.metrics.recordEventAsync(category, action, label, value) :
+
+        d.run(() => {
+            parseInt(value) ? this.metrics.recordEventAsync(category, action, label, value) :
                 this.metrics.recordFloatingPointEventAsync(category, action, label, value);
+
+        });
     }
 
 }
