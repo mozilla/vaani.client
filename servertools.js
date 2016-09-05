@@ -15,7 +15,6 @@ var streamServer;
 
 module.exports = {
 
-    wakeword: null,
     config: null,
     audiotools: null,
     connectionfailed: null,
@@ -24,8 +23,7 @@ module.exports = {
     logging: null,
 
 
-    setup: function(wakeword, config, audiotools, resetlisten, logging){
-        this.wakeword = wakeword;
+    setup: function(config, audiotools, resetlisten, logging){
         this.config = config;
         this.audiotools = audiotools;
         this.resetlisten = resetlisten;

@@ -29,7 +29,7 @@ const configLoader = function () {
 var config = configLoader('config.json', '.vaanirc');
 
 // then all required modules
-const Wakeword = require('./wakeword');
+const Wakeword = require('wakeword');
 const audiotools = require('./audiotools.js');
 const servertools = require('./servertools.js');
 const leds = require('./ledshelper.js');
@@ -56,15 +56,15 @@ function listen() {
       abort = true;
   };
 
-  
-  Wakeword.listen([config.wakeword], config.kwscore, config.kwsthreshold, (data, word) => {
+  Wakeword.defaultKwsThreshold = config.kwsthreshold;
+  Wakeword.listen([config.wakeword], config.kwscore, (data, word) => {
 
         let samples;
         // this block is executed only the first time after the kw get spotted per iteration
         if (!streamvad) {
           leds.processing();
           audiotools.greeting();
-          servertools.connectServer(Wakeword, audiotools);
+          servertools.connectServer();
           streamvad = new MemoryStream();
           wakeTime = Date.now();
           abort = false;
@@ -87,12 +87,12 @@ function listen() {
     () => {
         leds.deviceready();
         audiotools.setup(Wakeword, config, logging);
-        servertools.setup(Wakeword, config, audiotools, resetlisten, logging);
+        servertools.setup(config, audiotools, resetlisten, logging);
         getMac.getMac(function(err,macAddress){
             if (err)  console.warn('No Mac');
             logging.setup(macAddress.replace(/:/g,''));
             logging.addmetric("boot", "sucessfull", "ok", 1);
-            Wakeword.logging = logging;
+            Wakeword.metrics = logging.metrics;
         });
 
     }
