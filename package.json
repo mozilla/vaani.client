@@ -2,6 +2,9 @@
   "name": "vaani.client",
   "version": "0.0.1",
   "description": "Client for Project Vaani",
+  "bin": {
+    "vaani.client": "./bin/vaani.client"
+  },
   "main": "index.js",
   "scripts": {
     "forever": "forever start index.js",
