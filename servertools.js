@@ -29,7 +29,11 @@ module.exports = {
         this.resetlisten = resetlisten;
         this.logging = logging;
 
-        this.secret =  JSON.parse(process.env.VAANI_CONFIG || fs.readFileSync("secret.json"));
+        this.secret = {};
+        try {
+          this.secret = JSON.parse(process.env.VAANI_CONFIG ||
+                                   fs.readFileSync("secret.json"));
+        } catch(e) {}
 
         // creating logs folder if necessary
         if ((this.config.logaudios)) {
@@ -43,8 +47,9 @@ module.exports = {
         // environment variable in /lib/systemd/system/vaani.service.d/evernote.conf.
         // When vaani.setup starts us with systemd, we'll get the user's current
         // oauth token that way.
+        this.secret.evernote = this.secret.evernote ||
+                               this.config.evernote || {};
         if (process.env.EVERNOTE_OAUTH_TOKEN) {
-            this.secret.evernote = this.secret.evernote || {};
             this.secret.evernote.authtoken = process.env.EVERNOTE_OAUTH_TOKEN;
         }
 
@@ -81,7 +86,8 @@ module.exports = {
             options.key =  fs.readFileSync(ssldir + 'client-key.pem');
             options.cert = fs.readFileSync(ssldir + 'client-crt.pem');
             options.ca =   fs.readFileSync(ssldir + 'ca-crt.pem');
-            options.passphrase = this.secret.passphrase;
+            options.passphrase =
+              this.config.passphrase || this.secret.passphrase;
         }
 
         ws = new websocket(server, null, options);

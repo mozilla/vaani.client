@@ -1,7 +1,6 @@
 {
     "port": 443,
     "wakeword": "foxy",
-    "secure": true,
     "vaaniserver" : "put the wss:// URL to your vaani server here",
     "passphrase": "put the password for your vaani server here",
     "evernote": {
@@ -11,7 +10,9 @@
     "micgain": 0, // gain level in dbs to apply to the mic
     "vadaggressiveness": "0", // vad aggressiveness
     "kwscore": 0.83, // threshold of keyword score
+    "kwsthreshold": "1e-40", // threshold for phoneme incidence in matched keywords
     "micdevicename": "name of the microphone device",
+    "spkdevicename": "name of the speaker device",
     "ssldir": "folder to ssl certs",
     "VAD_BYTES":  640,
     "MAX_LISTEN_TIME": 7500,
