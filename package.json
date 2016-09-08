@@ -2,6 +2,9 @@
   "name": "vaani.client",
   "version": "0.0.1",
   "description": "Client for Project Vaani",
+  "bin": {
+    "vaani.client": "./bin/vaani.client"
+  },
   "main": "index.js",
   "scripts": {
     "forever": "forever start index.js",
@@ -26,10 +29,7 @@
     "memorystream": "0.3.1",
     "ws": "^1.1.0",
     "cd-metrics": "latest",
-    "concat-stream": "1.5.1",
-    "mic": "2.0.1",
-    "pocketsphinx": "5.0.5",
-    "which": "1.2.9",
+    "wakeword": "https://github.com/mozilla/wakeword#upstream",
     "getmac": "1.2.1",
     "nascent-ledbar": "https://github.com/mozilla/nascent-ledbar",
     "commander": "2.9.0"
